@@ -27,8 +27,9 @@ class GreekFilter {
     }
 
     words.forEach((word) => {
-      if (!this.badWords.includes(word.toLowerCase())) {
-        this.badWords.push(word.toLowerCase());
+      word = word.toLowerCase();
+      if (!this.isOffensive(word)) {
+        this.badWords.push(word);
       }
     });
     this.updateRegex();
