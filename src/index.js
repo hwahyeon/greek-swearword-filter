@@ -2,13 +2,13 @@ const defaultBadWords = require("./badwords.config.json");
 
 class GreekFilter {
   constructor(options = {}) {
-    this.badWords = [...new Set(options.customList || defaultBadWords)];
+    this.badWords = new Set(options.customList || defaultBadWords);
     this.placeholder = options.placeholder || "*";
     this.updateRegex();
   }
 
   isOffensive(word) {
-    return this.badWords.includes(word.toLowerCase());
+    return this.badWords.has(word.toLowerCase());
   }
 
   replaceWord(word) {
@@ -26,12 +26,8 @@ class GreekFilter {
       words = [words];
     }
 
-    words.forEach((word) => {
-      word = word.toLowerCase();
-      if (!this.isOffensive(word)) {
-        this.badWords.push(word);
-      }
-    });
+    words.forEach((word) => this.badWords.add(word.toLowerCase()));
+
     this.updateRegex();
   }
 
@@ -40,14 +36,12 @@ class GreekFilter {
       words = [words];
     }
 
-    this.badWords = this.badWords.filter(
-      (word) => !words.includes(word.toLowerCase())
-    );
+    words.forEach((word) => this.badWords.delete(word.toLowerCase()));
     this.updateRegex();
   }
 
   updateRegex() {
-    this.regex = new RegExp(this.badWords.join("|"), "gi");
+    this.regex = new RegExp([...this.badWords].join("|"), "gi");
   }
 }
 
