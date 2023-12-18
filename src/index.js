@@ -8,7 +8,7 @@ class GreekFilter {
   }
 
   isOffensive(word) {
-    return this.badWords.has(word.toUpperCase());
+    return this.badWords.includes(word.toLowerCase());
   }
 
   replaceWord(word) {
