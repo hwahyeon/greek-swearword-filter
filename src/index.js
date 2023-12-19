@@ -36,15 +36,27 @@ class GreekFilter {
     return this.badWords.has(wordWithoutAccents.toLowerCase());
   }
 
-  replaceWord(word) {
-    return word.replace(/./g, this.placeholder);
+  replaceWord(word, style) {
+    switch (style) {
+      case 'all':
+          return word.replace(/./g, this.placeholder);
+      case 'first':
+          return word.charAt(0) + word.slice(1).replace(/./g, this.placeholder);
+      case 'firstlast':
+          if (word.length > 2) {
+              return word.charAt(0) + word.slice(1, -1).replace(/./g, this.placeholder) + word.charAt(word.length - 1);
+          }
+          return word.charAt(0) + word.slice(1).replace(/./g, this.placeholder);
+      // default:
+      //     throw new Error("");
+    }
   }
 
-  filter(text) {
+  filter(text, style = 'all') {
     const textWithoutAccents = text.split(" ").map(removeAccents).join(" ");
 
     return textWithoutAccents.replace(this.regex, (match) => {
-      return this.replaceWord(match);
+      return this.replaceWord(match, style);
     });
   }
 
