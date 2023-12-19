@@ -1,5 +1,29 @@
 const defaultBadWords = require("./badwords.config.json");
 
+function removeAccents(word) {
+  const accentMappings = {
+    ά: "α",
+    έ: "ε",
+    ή: "η",
+    ί: "ι",
+    ό: "ο",
+    ύ: "υ",
+    ώ: "ω",
+    Ά: "Α",
+    Έ: "Ε",
+    Ή: "Η",
+    Ί: "Ι",
+    Ό: "Ο",
+    Ύ: "Υ",
+    Ώ: "Ω",
+  };
+
+  return word
+    .split("")
+    .map((char) => accentMappings[char] || char)
+    .join("");
+}
+
 class GreekFilter {
   constructor(options = {}) {
     this.badWords = new Set(options.customList || defaultBadWords);
@@ -8,7 +32,8 @@ class GreekFilter {
   }
 
   isOffensive(word) {
-    return this.badWords.has(word.toLowerCase());
+    const wordWithoutAccents = removeAccents(word);
+    return this.badWords.has(wordWithoutAccents.toLowerCase());
   }
 
   replaceWord(word) {
@@ -16,7 +41,9 @@ class GreekFilter {
   }
 
   filter(text) {
-    return text.replace(this.regex, (match) => {
+    const textWithoutAccents = text.split(" ").map(removeAccents).join(" ");
+
+    return textWithoutAccents.replace(this.regex, (match) => {
       return this.replaceWord(match);
     });
   }
@@ -26,7 +53,10 @@ class GreekFilter {
       words = [words];
     }
 
-    words.forEach((word) => this.badWords.add(word.toLowerCase()));
+    words.forEach((word) => {
+      const wordWithoutAccents = removeAccents(word);
+      this.badWords.add(wordWithoutAccents.toLowerCase());
+    });
 
     this.updateRegex();
   }
@@ -36,7 +66,10 @@ class GreekFilter {
       words = [words];
     }
 
-    words.forEach((word) => this.badWords.delete(word.toLowerCase()));
+    words.forEach((word) => {
+      const wordWithoutAccents = removeAccents(word);
+      this.badWords.delete(wordWithoutAccents.toLowerCase());
+    });
     this.updateRegex();
   }
 
