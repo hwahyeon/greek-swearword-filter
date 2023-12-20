@@ -7,6 +7,8 @@
 npm install greek-swearword-filter
 ```
 ## Usage
+### Setting Up the Filter
+Create an instance of the `GreekFilter` class:
 ```javascript
 const GreekFilter = require('greek-swearword-filter');
 
@@ -22,8 +24,12 @@ const filter = new GreekFilter();
 filter.filter("Σκατά στα μούτρα σου ρε σούργελο!");
 // ***** στα μούτρα σου ρε ********!
 ```
-
+*You're also able to create a filter instance with a specific placeholder and default filter style*
+```javascript
+const filter = new GreekFilter({ placeholder: '*', filterStyle: 'all' });
+```
 ### Placeholder
+The placeholder is the character used to mask the filtered words:
 ```javascript
 const filter = new GreekFilter();
 
@@ -37,6 +43,13 @@ filter.filter("Είναι μεγάλο αρχίδι ο προϊστάμενος.
 ```
 
 ### Style
+The filtering style determines how the words will be masked. Supported styles include:
+    
+- `'all'`: Masks the entire word.
+- `'first'`: Masks all characters except the first one.
+- `'firstlast'`: Masks all characters except the first and last one.
+    
+You can specify the style:
 ```javascript
 const filter = new GreekFilter();
 
@@ -44,22 +57,23 @@ filter.filter("μαλάκας") // *******
 filter.filter("μαλάκας", style = 'all') // *******
 filter.filter("μαλάκας", style = 'first') // μ******
 filter.filter("μαλάκας", style = 'firstlast') // μ*****ς
-```
 
-```javascript
+// You can simply pass the style as the second parameter
 filter.filter("μαλάκας", 'firstlast') // μ*****ς
 ```
 
 ### Add your word/words to the list
+Add words to the filter list. You can add a single word or multiple words at once using a list:
 ```javascript
+// Adding a single word
 filter.filter("μηλο"); // μηλο
 
 filter.addWords("μηλο");
 
 filter.filter("μηλο"); // ****
-```
 
-```javascript
+
+// Adding multiple words
 filter.filter("λεμονι, πορτοκαλι, πεπονι"); // λεμονι, πορτοκαλι, πεπονι
 
 filter.addWords(["λεμονι",  "πορτοκαλι",  "πεπονι"]);
@@ -68,12 +82,15 @@ filter.filter("λεμονι, πορτοκαλι, πεπονι"); // ******, ****
 ```
 
 ### Remove any word/words you want from the list
+Remove words from the filter list. Similar to adding words, you can remove a single word or multiple words using a list:
 ```javascript
+// Removing a single word
 filter.removeWords("Σκατά")
 
 filter.filter("Σκατά στα μούτρα σου ρε σούργελο!"); // Σκατά στα μούτρα σου ρε ********!
-```
-```javascript
+
+
+// Removing multiple words
 filter.removeWords(["Σκατά",  "σούργελο"])
 
 filter.filter("Σκατά στα μούτρα σου ρε σούργελο!"); // Σκατά στα μούτρα σου ρε σούργελο!
