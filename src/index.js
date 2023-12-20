@@ -28,6 +28,7 @@ class GreekFilter {
   constructor(options = {}) {
     this.badWords = new Set(options.customList || defaultBadWords);
     this.placeholder = options.placeholder || "*";
+    this.style = options.filterStyle || 'all';
     this.updateRegex();
   }
 
@@ -56,7 +57,7 @@ class GreekFilter {
     }
   }
 
-  filter(text, style = "all") {
+  filter(text, style = this.style) {
     // 악센트 제거 텍스트와 원본 비교 후 필터링
     const textWithoutAccents = text.split(" ").map(removeAccents).join(" ");
     let filteredText = text;
