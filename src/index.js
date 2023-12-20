@@ -38,26 +38,37 @@ class GreekFilter {
 
   replaceWord(word, style) {
     switch (style) {
-      case 'all':
-          return word.replace(/./g, this.placeholder);
-      case 'first':
-          return word.charAt(0) + word.slice(1).replace(/./g, this.placeholder);
-      case 'firstlast':
-          if (word.length > 2) {
-              return word.charAt(0) + word.slice(1, -1).replace(/./g, this.placeholder) + word.charAt(word.length - 1);
-          }
-          return word.charAt(0) + word.slice(1).replace(/./g, this.placeholder);
+      case "all":
+        return word.replace(/./g, this.placeholder);
+      case "first":
+        return word.charAt(0) + word.slice(1).replace(/./g, this.placeholder);
+      case "firstlast":
+        if (word.length > 2) {
+          return (
+            word.charAt(0) +
+            word.slice(1, -1).replace(/./g, this.placeholder) +
+            word.charAt(word.length - 1)
+          );
+        }
+        return word.charAt(0) + word.slice(1).replace(/./g, this.placeholder);
       // default:
       //     throw new Error("");
     }
   }
 
-  filter(text, style = 'all') {
+  filter(text, style = "all") {
+    // 악센트 제거 텍스트와 원본 비교 후 필터링
     const textWithoutAccents = text.split(" ").map(removeAccents).join(" ");
+    let filteredText = text;
 
-    return textWithoutAccents.replace(this.regex, (match) => {
-      return this.replaceWord(match, style);
+    textWithoutAccents.replace(this.regex, (match, offset) => {
+      // 원본 텍스트에서 해당 부분을 찾아 마스킹
+      const originalTextMatch = text.substr(offset, match.length);
+      const maskedText = this.replaceWord(originalTextMatch, style);
+      filteredText = filteredText.replace(originalTextMatch, maskedText);
     });
+
+    return filteredText;
   }
 
   addWords(words) {
@@ -66,7 +77,8 @@ class GreekFilter {
     }
 
     words.forEach((word) => {
-      const wordWithoutAccents = removeAccents(word);
+      const wordAsString = String(word);
+      const wordWithoutAccents = removeAccents(wordAsString);
       this.badWords.add(wordWithoutAccents.toLowerCase());
     });
 
@@ -79,7 +91,8 @@ class GreekFilter {
     }
 
     words.forEach((word) => {
-      const wordWithoutAccents = removeAccents(word);
+      const wordAsString = String(word);
+      const wordWithoutAccents = removeAccents(wordAsString);
       this.badWords.delete(wordWithoutAccents.toLowerCase());
     });
     this.updateRegex();
