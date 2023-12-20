@@ -32,10 +32,10 @@ class GreekFilter {
     this.updateRegex();
   }
 
-  isOffensive(word) {
-    const wordWithoutAccents = removeAccents(word);
-    return this.badWords.has(wordWithoutAccents.toLowerCase());
-  }
+  // isOffensive(word) {
+  //   const wordWithoutAccents = removeAccents(word);
+  //   return this.badWords.has(wordWithoutAccents.toLowerCase());
+  // }
 
   replaceWord(word, style) {
     switch (style) {
