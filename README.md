@@ -98,18 +98,28 @@ const filter = new GreekFilter({ placeholder: '*', filteringStyle: 'all' });
 #### `addWords(words)`
 - Description: Adds words to the filtering list.
 - Parameters:
-  - `words`: String or array of strings, the words to be filtered.
+  - `words`: String or array of strings, the words to be filtered. For adding multiple words, an array of strings must be used.
 - Usage:
 ```javascript
-filter.addWords(["badword1", "badword2"]);
+// Adding a single word
+filter.addWords("badword");
+filter.addWords(["badword"]);
+
+// Adding multiple words
+filter.addWords(["badword1", "badword2", "badword3"]);
 ```
 #### `removeWords(words)`
-- Description: Removes words from the filtering list.
+- Description: Removes words from the filtering list. 
 - Parameters:
-  - `words`: String or array of strings, the words to be removed.
+  - `words`: String or array of strings, the words to be removed. For removing multiple words, an array of strings must be used.
 - Usage:
 ```javascript
-filter.removeWords(["badword1", "badword2"]);
+// Removing a single word
+filter.removeWords("badword");
+filter.removeWords(["badword"]);
+
+// Removing multiple words
+filter.removeWords(["badword1", "badword2", "badword3"]);
 ```
 
 #### `filter(text, style)`
